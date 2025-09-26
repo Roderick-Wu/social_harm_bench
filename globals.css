@@ -53,7 +53,9 @@
     -webkit-line-clamp: 3;
   }
 }
-{
+
+/* Layout Styles */
+body {
   gap: 1rem;
   margin-bottom: 1.5rem;
   flex: 1;
