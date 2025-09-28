@@ -1,8 +1,9 @@
 {
   "benchmarkName": "Social Harm Benchmark",
-  "version": "1.0",
+  "version": "1.0", 
   "description": "A comprehensive evaluation of AI model safety against social harm attacks, measuring attack success rates across various categories of potentially harmful content.",
   "lastUpdated": "2025-01-15",
+  "researchPapers": [],
   "categories": [
     {
       "id": "hate-speech",

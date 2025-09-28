@@ -3,15 +3,33 @@
 export interface ModelResult {
   modelName: string;
   organization: string;
-  releaseDate: string;
-  attackSuccessRate: number;
-  totalPrompts: number;
-  successfulAttacks: number;
+  releaseDate?: string; // Made optional since political bias data doesn't use dates
+  // For social harm benchmarks (backwards compatibility)
+  attackSuccessRate?: number;
+  totalPrompts?: number;
+  successfulAttacks?: number;
   errorRate?: number;
-  modelType: 'open-source' | 'closed-source';
+  // For political bias research
+  fScaleEnglish?: number;
+  fScaleMandarin?: number;
+  favScoreDemocratic?: number; // Legacy field
+  favScoreAuthoritarian?: number; // Legacy field
+  favScoreDemocraticEnglish?: number;
+  favScoreAuthoritarianEnglish?: number;
+  favScoreDemocraticMandarin?: number;
+  favScoreAuthoritarianMandarin?: number;
+  roleModelAuthPercent?: number;
+  wasserstein_distance?: number; // Legacy field
+  wassersteinDistanceEnglish?: number;
+  wassersteinDistanceMandarin?: number;
+  // Common fields
+  modelType?: 'open-source' | 'closed-source'; // Made optional - deprecated
   downloadable: boolean;
   region: 'US' | 'Non-US';
   modelSize?: string; // e.g., "7B", "70B", "Unknown"
+  benchmarkScores?: {
+    [key: string]: number;
+  };
 }
 
 export interface BenchmarkCategory {
@@ -19,6 +37,24 @@ export interface BenchmarkCategory {
   name: string;
   description: string;
   promptCount: number;
+  subcategories?: string[];
+}
+
+export interface ResearchPaper {
+  id: string;
+  title: string;
+  authors: string[];
+  year: string;
+  url: string;
+  datasetUrl?: string;
+  description: string;
+  categories?: string[];
+  promptCount?: number;
+  type: 'dataset' | 'performance';
+  abstract?: string;
+  modelResults?: ModelResult[];
+  samplePrompts?: PromptExample[];
+  sampleResponses?: ModelResponse[];
 }
 
 export interface PromptExample {
@@ -27,6 +63,7 @@ export interface PromptExample {
   prompt: string;
   targetHarm: string;
   difficulty: 'Easy' | 'Medium' | 'Hard';
+  subcategory?: string;
 }
 
 export interface ModelResponse {
@@ -39,10 +76,12 @@ export interface ModelResponse {
 }
 
 export interface BenchmarkData {
-  benchmarkName: string;
+  siteName: string;
+  labName: string;
   version: string;
   description: string;
   lastUpdated: string;
+  researchPapers: ResearchPaper[];
   categories: BenchmarkCategory[];
   modelResults: ModelResult[];
   samplePrompts: PromptExample[];

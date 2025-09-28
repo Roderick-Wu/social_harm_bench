@@ -1,5 +1,17 @@
 import { useState } from 'react';
-import { FilterOptions, ModelResult } from '@/types/benchmark';
+import { ModelResult } from '@/types/benchmark';
+
+interface FilterOptions {
+  organizations: string[];
+  modelTypes: ('open-source' | 'closed-source')[];
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  categories: string[];
+  minSuccessRate?: number;
+  maxSuccessRate?: number;
+}
 
 interface FilterControlsProps {
   modelResults: ModelResult[];
@@ -21,6 +33,16 @@ const FilterControls: React.FC<FilterControlsProps> = ({ modelResults, onFilterC
 
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+  // Handle empty arrays gracefully
+  if (!modelResults || modelResults.length === 0) {
+    return (
+      <div className="bg-white rounded-lg shadow p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
+        <p className="text-gray-600 text-sm">No model results available to filter.</p>
+      </div>
+    );
+  }
+
   // Get unique values for filter options
   const uniqueOrganizations = Array.from(new Set(modelResults.map(m => m.organization)));
   const modelTypes = ['open-source', 'closed-source'] as const;
@@ -33,25 +55,25 @@ const FilterControls: React.FC<FilterControlsProps> = ({ modelResults, onFilterC
       filtered = filtered.filter(m => newFilters.organizations.includes(m.organization));
     }
 
-    // Filter by model types
+    // Filter by model types (skip if modelType is undefined)
     if (newFilters.modelTypes.length > 0) {
-      filtered = filtered.filter(m => newFilters.modelTypes.includes(m.modelType));
+      filtered = filtered.filter(m => m.modelType && newFilters.modelTypes.includes(m.modelType));
     }
 
-    // Filter by date range
+    // Filter by date range (skip if releaseDate is undefined)
     if (newFilters.dateRange.start) {
-      filtered = filtered.filter(m => new Date(m.releaseDate) >= new Date(newFilters.dateRange.start));
+      filtered = filtered.filter(m => m.releaseDate && new Date(m.releaseDate) >= new Date(newFilters.dateRange.start));
     }
     if (newFilters.dateRange.end) {
-      filtered = filtered.filter(m => new Date(m.releaseDate) <= new Date(newFilters.dateRange.end));
+      filtered = filtered.filter(m => m.releaseDate && new Date(m.releaseDate) <= new Date(newFilters.dateRange.end));
     }
 
-    // Filter by success rate range
+    // Filter by success rate range (only for models that have attackSuccessRate)
     if (newFilters.minSuccessRate !== undefined) {
-      filtered = filtered.filter(m => m.attackSuccessRate >= newFilters.minSuccessRate!);
+      filtered = filtered.filter(m => m.attackSuccessRate !== undefined && m.attackSuccessRate >= newFilters.minSuccessRate!);
     }
     if (newFilters.maxSuccessRate !== undefined) {
-      filtered = filtered.filter(m => m.attackSuccessRate <= newFilters.maxSuccessRate!);
+      filtered = filtered.filter(m => m.attackSuccessRate !== undefined && m.attackSuccessRate <= newFilters.maxSuccessRate!);
     }
 
     onFilterChange(filtered);
@@ -110,7 +132,6 @@ const FilterControls: React.FC<FilterControlsProps> = ({ modelResults, onFilterC
   };
 
   const hasActiveFilters = filters.organizations.length > 0 || 
-                          filters.modelTypes.length > 0 || 
                           filters.dateRange.start || 
                           filters.dateRange.end || 
                           filters.minSuccessRate !== undefined || 
@@ -131,28 +152,6 @@ const FilterControls: React.FC<FilterControlsProps> = ({ modelResults, onFilterC
       </div>
 
       <div className="space-y-4">
-        {/* Model Type Filter */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Model Type
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {modelTypes.map(type => (
-              <label key={type} className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={filters.modelTypes.includes(type)}
-                  onChange={(e) => handleModelTypeChange(type, e.target.checked)}
-                  className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">
-                  {type === 'open-source' ? 'Open Source' : 'Closed Source'}
-                </span>
-              </label>
-            ))}
-          </div>
-        </div>
-
         {/* Organization Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -257,7 +256,6 @@ const FilterControls: React.FC<FilterControlsProps> = ({ modelResults, onFilterC
           <p className="text-sm text-gray-600">
             Active filters: {[
               filters.organizations.length > 0 && `${filters.organizations.length} organization(s)`,
-              filters.modelTypes.length > 0 && `${filters.modelTypes.length} model type(s)`,
               filters.dateRange.start && 'date range',
               filters.minSuccessRate !== undefined && 'min success rate',
               filters.maxSuccessRate !== undefined && 'max success rate'

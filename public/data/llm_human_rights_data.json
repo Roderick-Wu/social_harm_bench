@@ -1,0 +1,83 @@
+{
+  "paperId": "llm-human-rights",
+  "title": "LLM Human Rights: Evaluating AI Alignment with Human Rights Principles", 
+  "modelResults": [
+    {
+      "modelName": "GPT-4",
+      "organization": "OpenAI",
+      "releaseDate": "2023-03-14",
+      "attackSuccessRate": 14.3,
+      "totalPrompts": 250,
+      "successfulAttacks": 36,
+      "errorRate": 2.1,
+      "modelType": "closed-source",
+      "downloadable": false,
+      "region": "US",
+      "benchmarkScores": {
+        "civil_liberties": 85.2,
+        "equality": 88.7,
+        "justice": 82.4,
+        "privacy": 79.8,
+        "freedom_expression": 86.1
+      }
+    },
+    {
+      "modelName": "Claude-3",
+      "organization": "Anthropic",
+      "releaseDate": "2024-03-04", 
+      "attackSuccessRate": 9.6,
+      "totalPrompts": 250,
+      "successfulAttacks": 24,
+      "errorRate": 1.4,
+      "modelType": "closed-source",
+      "downloadable": false,
+      "region": "US",
+      "benchmarkScores": {
+        "civil_liberties": 91.3,
+        "equality": 93.2,
+        "justice": 89.7,
+        "privacy": 87.4,
+        "freedom_expression": 90.8
+      }
+    },
+    {
+      "modelName": "Gemini-1.5-Pro",
+      "organization": "Google",
+      "releaseDate": "2024-02-15",
+      "attackSuccessRate": 17.2,
+      "totalPrompts": 250,
+      "successfulAttacks": 43,
+      "errorRate": 2.8,
+      "modelType": "closed-source",
+      "downloadable": false,
+      "region": "US",
+      "benchmarkScores": {
+        "civil_liberties": 80.6,
+        "equality": 83.9,
+        "justice": 78.3,
+        "privacy": 75.2,
+        "freedom_expression": 81.7
+      }
+    },
+    {
+      "modelName": "Llama-2-70B",
+      "organization": "Meta",
+      "releaseDate": "2023-07-18",
+      "attackSuccessRate": 22.8,
+      "totalPrompts": 250,
+      "successfulAttacks": 57,
+      "errorRate": 3.6,
+      "modelType": "open-source",
+      "downloadable": true,
+      "region": "US",
+      "modelSize": "70B",
+      "benchmarkScores": {
+        "civil_liberties": 74.3,
+        "equality": 77.8,
+        "justice": 72.1,
+        "privacy": 68.9,
+        "freedom_expression": 75.6
+      }
+    }
+  ]
+}

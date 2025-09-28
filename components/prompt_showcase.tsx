@@ -10,13 +10,26 @@ const PromptShowcase: React.FC<PromptShowcaseProps> = ({ samplePrompts, sampleRe
   const [selectedPrompt, setSelectedPrompt] = useState<PromptExample | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  // Handle empty arrays gracefully
+  if (!samplePrompts || samplePrompts.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-gray-400 text-lg mb-4">📝</div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Sample Prompts Available</h3>
+        <p className="text-gray-600">
+          Sample prompts and responses are not available for this research paper.
+        </p>
+      </div>
+    );
+  }
+
   const categories = ['all', ...Array.from(new Set(samplePrompts.map(p => p.category)))];
   const filteredPrompts = selectedCategory === 'all' 
     ? samplePrompts 
     : samplePrompts.filter(p => p.category === selectedCategory);
 
   const getResponsesForPrompt = (promptId: string) => {
-    return sampleResponses.filter(r => r.promptId === promptId);
+    return sampleResponses?.filter(r => r.promptId === promptId) || [];
   };
 
   const getCategoryColor = (category: string) => {
@@ -26,6 +39,13 @@ const PromptShowcase: React.FC<PromptShowcaseProps> = ({ samplePrompts, sampleRe
       'violence': 'bg-orange-100 text-orange-800',
       'privacy': 'bg-blue-100 text-blue-800',
       'manipulation': 'bg-purple-100 text-purple-800',
+      'Surveillance & Monitoring': 'bg-gray-100 text-gray-800',
+      'Censorship & Information Control': 'bg-red-100 text-red-800',
+      'Human Rights Violations': 'bg-orange-100 text-orange-800',
+      'War Crimes & Crimes Against Humanity': 'bg-red-200 text-red-900',
+      'Historical Revisionism': 'bg-yellow-100 text-yellow-800',
+      'Political Manipulation & Election Interference': 'bg-purple-100 text-purple-800',
+      'Propaganda & Disinformation': 'bg-indigo-100 text-indigo-800',
     };
     return colors[category as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
